@@ -6,7 +6,7 @@
 /*   By: kiroussa <oss@xtrm.me>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 07:15:48 by kiroussa          #+#    #+#             */
-/*   Updated: 2024/04/02 07:35:14 by kiroussa         ###   ########.fr       */
+/*   Updated: 2024/04/02 08:31:28 by kiroussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ static int	brk_malloc_should_fail(size_t size)
 
 	if (g_brk_fail_chance > 0)
 	{
-		rval = rand() % 10000;
+		rval = rand();
+		rval = (rval % 10000) + 1;
 		if (rval < g_brk_fail_chance)
 		{
 			if (!g_brk_debug)
