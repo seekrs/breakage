@@ -6,12 +6,12 @@
 /*   By: kiroussa <oss@xtrm.me>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 01:11:49 by kiroussa          #+#    #+#             */
-/*   Updated: 2024/04/02 06:29:45 by kiroussa         ###   ########.fr       */
+/*   Updated: 2024/04/02 07:22:50 by kiroussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /**
- * @file break.h
+ * @file brk.h
  * @author kiroussa
  * @version 0.1
  *
@@ -21,7 +21,7 @@
 #ifndef BRK_H
 # define BRK_H
 
-# define _GNU_SOURCE // useful for RTLD_NEXT
+# define _GNU_SOURCE // for RTLD_NEXT
 # include <dlfcn.h>
 # undef _GNU_SOURCE
 # include <execinfo.h>
@@ -36,6 +36,9 @@
 # define WARN		"\033[1;33mWARN\033[0m"
 # define ERR		"\033[1;31m ERR\033[0m"
 # define DEBUG		"\033[1;34m DBG\033[0m"
+
+// !> VERY EXPERIMENTAL, USE AT YOUR OWN RISK, MIGHT CREATE ITS OWN CRASHES
+# define CHECK_LEAKS 0
 
 extern int			g_brk_hook_enable;
 extern int			g_brk_debug;
@@ -55,15 +58,15 @@ typedef struct s_alloc_list
 
 extern t_alloc_list	*g_alloc_list;
 
-size_t	brk_allocs_count(void);
+void	brk_find_symbol(const char *name, void **ptr);
+
 void	brk_log(const char *level, const char *msg, ...)
 					__attribute__((format(printf, 2, 3)));
 void	brk_fprintf(FILE *stream, const char *msg, ...)
 					__attribute__((format(printf, 2, 3)));
-void	brk_insert_alloc(void *ptr);
 void	brk_backtrace(void);
 
-void	*malloc(size_t size);
-void	free(void *ptr);
+size_t	brk_allocs_count(void);
+void	brk_insert_alloc(void *ptr);
 
 #endif // BRK_H
