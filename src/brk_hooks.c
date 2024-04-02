@@ -6,15 +6,14 @@
 /*   By: kiroussa <oss@xtrm.me>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 01:14:47 by kiroussa          #+#    #+#             */
-/*   Updated: 2024/04/02 02:57:10 by kiroussa         ###   ########.fr       */
+/*   Updated: 2024/04/02 06:19:49 by kiroussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "brk.h"
-#define CHECK_LEAKS 1
+#define CHECK_LEAKS 0
 
 int				g_brk_hook_enable = 1;
-int				g_fail_chance = 0;
 
 static void	brk_find_symbol(const char *name, void **ptr)
 {
@@ -29,6 +28,17 @@ static void	brk_find_symbol(const char *name, void **ptr)
 		}
 		brk_fprintf(stderr, " %p\n", *ptr);
 	}
+}
+
+void	add_history(const char *line)
+{
+	int		state;
+
+	brk_find_symbol("add_history", (void **)&g_real_add_history);
+	state = g_brk_hook_enable;
+	g_brk_hook_enable = 0;
+	g_real_add_history(line);
+	g_brk_hook_enable = state;
 }
 
 char	*readline(const char *prompt)
@@ -50,18 +60,24 @@ void	*malloc(size_t size)
 	int				rval;
 
 	brk_find_symbol("malloc", (void **)&g_real_malloc);
+	if (g_brk_hook_enable == 0)
+		return (g_real_malloc(size));
 	if (size == 0)
 		brk_log(WARN, "malloc called with size 0\n");
+	if (g_brk_debug)
+		brk_backtrace();
 	brk_log(DEBUG, "malloc(%zu) = ", size);
-	if (g_fail_chance > 0)
+	if (g_brk_fail_chance > 0)
 	{
-		rval = rand() % 100;
-		if (rval < g_fail_chance && !g_brk_debug)
+		rval = rand() % 100000;
+		if (rval < g_brk_fail_chance && !g_brk_debug)
 			brk_log(ERR, "malloc(%zu) = ", size);
-		if (rval < g_fail_chance)
+		if (rval < g_brk_fail_chance)
+		{
 			brk_fprintf(stderr, "failed :^)\n");
-		if (rval < g_fail_chance)
+			brk_backtrace();
 			return (NULL);
+		}
 	}
 	ptr = g_real_malloc(size);
 	if (g_brk_debug)

@@ -6,7 +6,7 @@
 /*   By: kiroussa <oss@xtrm.me>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 02:16:20 by kiroussa          #+#    #+#             */
-/*   Updated: 2024/04/02 02:37:03 by kiroussa         ###   ########.fr       */
+/*   Updated: 2024/04/02 06:30:44 by kiroussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	brk_fprintf(FILE *stream, const char *format, ...)
 	va_list	args;
 	int		state;
 
+	if (!g_brk_log_enable)
+		return ;
 	state = g_brk_hook_enable;
 	g_brk_hook_enable = 0;
 	va_start(args, format);

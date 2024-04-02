@@ -6,7 +6,7 @@
 /*   By: kiroussa <oss@xtrm.me>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 01:11:49 by kiroussa          #+#    #+#             */
-/*   Updated: 2024/04/02 02:55:05 by kiroussa         ###   ########.fr       */
+/*   Updated: 2024/04/02 06:29:45 by kiroussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,12 @@
 extern int			g_brk_hook_enable;
 extern int			g_brk_debug;
 extern int			g_brk_fail_chance;
+extern int			g_brk_log_enable;
 
 extern void			*(*g_real_malloc)(size_t size);
 extern void			(*g_real_free)(void *ptr);
 extern char			*(*g_real_readline)(const char *prompt);
+extern void			(*g_real_add_history)(const char *string);
 
 typedef struct s_alloc_list
 {

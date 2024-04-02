@@ -6,7 +6,7 @@
 /*   By: kiroussa <oss@xtrm.me>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 01:23:47 by kiroussa          #+#    #+#             */
-/*   Updated: 2024/04/02 02:33:06 by kiroussa         ###   ########.fr       */
+/*   Updated: 2024/04/02 06:29:59 by kiroussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	brk_log(const char *level, const char *msg, ...)
 	va_list	args;
 	int		state;
 
+	if (!g_brk_log_enable)
+		return ;
 	if (level && !strcmp(DEBUG, level) && !g_brk_debug)
 		return ;
 	state = g_brk_hook_enable;

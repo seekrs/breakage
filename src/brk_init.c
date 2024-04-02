@@ -6,7 +6,7 @@
 /*   By: kiroussa <oss@xtrm.me>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 01:36:53 by kiroussa          #+#    #+#             */
-/*   Updated: 2024/04/02 02:57:47 by kiroussa         ###   ########.fr       */
+/*   Updated: 2024/04/02 06:29:26 by kiroussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,32 @@
 
 int		g_brk_fail_chance = 0;
 int		g_brk_debug = 0;
+int		g_brk_log_enable = 1;
 
 static void	brk_parse_env(void)
 {
 	int		i;
-	char	*env;
+	float	tmp;
 
 	i = 0;
 	while (__environ[i])
 	{
-		env = __environ[i];
-		if (!strncmp(env, "BRK_FAIL_CHANCE=", 16))
+		if (!strncmp(__environ[i], "BRK_FAIL_CHANCE=", 16))
 		{
 			g_brk_fail_chance = atoi(__environ[i] + 16);
+			tmp = ((float)g_brk_fail_chance) / 100.;
 			brk_log(INFO, "malloc fail chance "
-				"set to %d%%\n", g_brk_fail_chance);
+				"set to %f%%\n", tmp);
 		}
-		if (!strncmp(env, "BRK_DEBUG", 9))
+		if (!strncmp(__environ[i], "BRK_DEBUG", 9))
 		{
 			g_brk_debug = 1;
 			brk_log(DEBUG, "enable debug logging\n");
+		}
+		if (!strncmp(__environ[i], "BRK_NO_LOG", 10))
+		{
+			g_brk_log_enable = 0;
+			brk_log(DEBUG, "disable logging\n");
 		}
 		i++;
 	}
@@ -42,6 +48,7 @@ static void	brk_parse_env(void)
 void	*(*g_real_malloc)(size_t size);
 void	(*g_real_free)(void *ptr);
 char	*(*g_real_readline)(const char *prompt);
+void	(*g_real_add_history)(const char *line);
 
 __attribute__((constructor))
 void	brk_init(void)
