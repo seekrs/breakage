@@ -1,5 +1,7 @@
 # breakage
-> Break your code and make it more secure.
+> Secure your code by dropping a nuke on it.
+
+[![A demonstration of breakage crashing a program in a colorful Terminal](./.github/demo.gif)](./.github/demo.gif)
 
 ## What is this?
 
@@ -36,8 +38,6 @@ While this is obvious in this case, as your program grows in complexity, this ca
 
 ## How to use breakage
 
-*****you might want to look at [How to build] first, just sayin'*****
-
 This is when this tool comes into play: breakage is a shared library that, when loaded via [LD_PRELOAD](https://www.man7.org/linux/man-pages/man8/ld.so.8.html), intercepts `malloc` calls, and returns `NULL` at random.
 
 You configure breakage via environment variables; here's somewhat of a configuration:
@@ -72,12 +72,13 @@ This tool also has some small integrations with `readline` (and `add_history`) s
 If you want to use it with something like `valgrind`, I'd suggest using the `env` GNU utility and tracking children. For example:
 
 ```bash
+# Use --trace-children to see minishell's errors
 valgrind --trace-children=yes env LD_PRELOAD=$BREAKAGE BRK_FAIL_CHANCE=1000 BRK_NO_LOG=1 ./minishell
 ```
 
 ## How to build
 
-breakage is written in Divine C; that is, C that follows the [42 Norm](https://github.com/42School/norminette/blob/master/pdf/en.norm.pdf).
+**breakage** is written in Divine C; that is, C that follows the [42 Norm](https://github.com/42School/norminette/blob/master/pdf/en.norm.pdf).
 
 For build tools, you'll need a C compiler (`clang` is used here, but this can be changed), and GNU `make`.
 
@@ -97,8 +98,6 @@ make
 ```
 
 This should produce a `libbreakage.so` in the directory.
-
-You can now learn [How to use breakage].
 
 ## Future goals
 
